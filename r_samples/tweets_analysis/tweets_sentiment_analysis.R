@@ -9,7 +9,7 @@
 
 library(tidytext)
 
-source("sample_code/r_code_samples/tweets_utils.R")
+source("sample_code/r_samples/tweets_analysis/tweets_utils.R")
 
 ##
 ## Data Ingestion and Prep
@@ -38,17 +38,21 @@ brandTweets = list(mcdonaldsCleanDT$tweet, wendysCleanDT$tweet)
 series = tibble()
 
 for (i in seq_along(brands)) {
-  cleaned = tibble(chapter = seq_along(brandTweets[[i]]),
-                   text = brandTweets[[i]]) %>%
-    unnest_tokens(word, text) %>%
-    mutate(brandName = brands[i]) %>%
-    select(brandName, everything())
+  
+  tibble = tibble(chapter = seq_along(brandTweets[[i]]),
+                  text = brandTweets[[i]])
+  
+  unnestedTokens = unnest_tokens(tibble, word, text)
+  mutated = mutate(unnestedTokens, brandName = brands[i])
+  cleaned = select(mutated, brandName, everything())
   
   series = rbind(series, cleaned)
 }
+
 series$brandTweet = factor(series$brandName, levels = rev(brands))
 
 # Plot Sentiment by Tweet
+
 series %>%
   group_by(brandName) %>% 
   mutate(index = chapter) %>% 
@@ -80,3 +84,5 @@ sentimentMcDonalds = tweetsSentiment[ which(tweetsSentiment$brand=="mcdonalds"),
 # Sum up total sentiment of each brand
 sum(sentimentMcDonalds$sentiment)
 sum(sentimentWendys$sentiment)
+
+# TODO: Add code generating a simple model to predict sentiment from term being present

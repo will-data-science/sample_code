@@ -18,7 +18,7 @@ library(tidytext)
 library(readxl)
 library(data.table)
 
-source("sample_code/r_code_samples/tweets_utils.R")
+source("sample_code/r_samples/tweets_analysis/tweets_utils.R")
 
 ##
 ## Data Ingestion and Prep
